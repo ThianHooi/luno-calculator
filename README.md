@@ -1,19 +1,40 @@
-# Create T3 App
+# Luno Investment Calculator
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+A web application that helps Luno cryptocurrency exchange users analyze their investment performance. Upload your transaction history and get detailed insights about your investments.
 
-## What's next? How do I make an app with this?
+## Features
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+- **CSV Upload**: Upload your Luno transaction history for analysis (all data processed locally in your browser)
+- **Investment Summary**: View a comprehensive summary of your cryptocurrency investments
+- **ROI Calculator**: Calculate your Return on Investment across different cryptocurrencies
+- **Transaction History**: Browse through your complete transaction history
+- **Yearly Breakdown**: Analyze your investment performance year by year
+- **Privacy Focused**: All data is processed entirely in your browser - no data is sent to any third parties
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+## Technology Stack please join our [Discord](https://t3.gg/discord) and ask for help.
 
 - [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Drizzle](https://orm.drizzle.team)
 - [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+
+## Getting Started
+
+1. Clone the repository
+2. Install dependencies:
+```bash
+bun install
+```
+3. Run the development server:
+```bash
+bun run dev
+```
+4. Open [http://localhost:3000](http://localhost:3000) in your browser
+
+## How to Use
+
+1. Download your transaction history from Luno as a CSV file
+2. Upload the CSV file in the application
+3. View your investment summary, ROI, and yearly breakdown
+4. All calculations happen in your browser - your data never leaves your computer
 
 ## Learn More
 
@@ -24,6 +45,25 @@ To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the fo
 
 You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
 
-## How do I deploy this?
+## Deployment
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+This application is designed to be easily deployed to platforms like Vercel or Netlify. Since all data processing happens client-side, you don't need to worry about server configurations for data handling.
+
+For deployment instructions, follow the guides for:
+- [Vercel](https://nextjs.org/docs/deployment)
+- [Netlify](https://docs.netlify.com/integrations/frameworks/next-js/overview/)
+
+## Privacy
+
+This application is designed with privacy in mind:
+- All transaction data is processed locally in your browser
+- No data is sent to any server or third party
+- No tracking or analytics are implemented
+
+## Contributing
+
+Contributions are welcome! Feel free to open issues or submit pull requests.
+
+## License
+
+MIT
