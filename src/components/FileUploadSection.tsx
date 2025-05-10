@@ -24,7 +24,7 @@ const FileUploadSection = ({
       <div className="flex flex-col items-center gap-4 md:flex-row">
         <div className="w-full">
           <label className="mb-2 block text-sm font-medium text-gray-700">
-            Upload your transaction CSV file
+            Upload your transaction CSV file downloaded from Luno
           </label>
           <div className="flex flex-col gap-4 md:flex-row">
             <div className="flex-1">

@@ -40,22 +40,15 @@ const LunoInvestmentCalculator: React.FC = () => {
               return;
             }
 
-            // Filter for transactions of the selected currency
-            // Special handling for BTC which can be represented as XBT in some exchanges like Luno
-            const filteredTransactions = results.data.filter((row) => {
-              const upperCurrency = currency.toUpperCase();
-              const rowCurrency = row.Currency?.toUpperCase() ?? "";
+            const currencyFromFile =
+              results.data[0]?.Currency === "XBT"
+                ? "BTC"
+                : results.data[0]?.Currency;
+            setCurrency(currencyFromFile ?? "BTC");
 
-              // If user enters BTC, match both BTC and XBT
-              if (upperCurrency === "BTC" || upperCurrency === "XBT") {
-                return rowCurrency === "BTC" || rowCurrency === "XBT";
-              }
+            const allTransactions = results.data;
 
-              // For all other currencies, exact match
-              return rowCurrency === upperCurrency;
-            });
-
-            if (filteredTransactions.length === 0) {
+            if (allTransactions.length === 0) {
               setError(`No ${currency} transactions found in the CSV file`);
               setIsLoading(false);
               return;
@@ -63,7 +56,7 @@ const LunoInvestmentCalculator: React.FC = () => {
 
             // Group transactions by reference ID to combine main transactions with their fees
             const groupedByReference: Record<string, CSVRow[]> = {};
-            filteredTransactions.forEach((row) => {
+            allTransactions.forEach((row) => {
               const reference = row.Reference ?? "";
               groupedByReference[reference] ??= [];
               groupedByReference[reference].push(row);
@@ -233,33 +226,8 @@ const LunoInvestmentCalculator: React.FC = () => {
   return (
     <div className="mx-auto max-w-6xl rounded-lg bg-white p-6 shadow">
       <h1 className="mb-6 text-center text-2xl font-bold text-blue-700">
-        Cryptocurrency Investment Calculator
+        Cryptocurrency Investment Calculator - LUNO
       </h1>
-
-      {/* Currency Selection */}
-      <div className="mb-6 rounded-lg bg-blue-50 p-4 shadow">
-        <div className="flex flex-col md:flex-row md:items-center md:gap-4">
-          <div className="mb-4 md:mb-0 md:w-1/3">
-            <label className="mb-1 block text-sm font-medium text-gray-700">
-              Currency
-            </label>
-            <input
-              type="text"
-              value={currency}
-              onChange={(e) => setCurrency(e.target.value.toUpperCase())}
-              className="w-full rounded border border-gray-300 p-2 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
-              placeholder="ETH, BTC, etc."
-            />
-          </div>
-          <div className="text-sm text-gray-600 md:w-2/3">
-            <p>
-              Enter the cryptocurrency code (e.g., ETH, BTC) to filter
-              transactions. The calculator will only process transactions for
-              the selected currency.
-            </p>
-          </div>
-        </div>
-      </div>
 
       {/* File Upload Section */}
       <FileUploadSection
