@@ -224,7 +224,7 @@ const LunoInvestmentCalculator: React.FC = () => {
   const transactionsByYear = getTransactionsByYear();
 
   return (
-    <div className="mx-auto max-w-6xl rounded-lg bg-white p-6 shadow">
+    <div className="mx-auto max-w-7xl rounded-lg bg-white p-6 shadow">
       <h1 className="mb-6 text-center text-2xl font-bold text-blue-700">
         Cryptocurrency Investment Calculator - LUNO
       </h1>

@@ -19,8 +19,8 @@ const ROICalculator = ({
       <h2 className="mb-4 text-xl font-semibold text-green-800">
         Return on Investment
       </h2>
-      <div className="mb-4 flex flex-col items-center gap-4 md:flex-row">
-        <div className="w-full md:w-1/3">
+      <div className="mb-4">
+        <div className="mb-4 w-full md:w-1/3">
           <label className="mb-1 block text-sm font-medium text-gray-700">
             Current {metrics.currency} Price (MYR)
           </label>
@@ -28,10 +28,10 @@ const ROICalculator = ({
             type="number"
             value={currentPrice}
             onChange={(e) => setCurrentPrice(Number(e.target.value))}
-            className="w-full rounded border border-gray-300 p-2 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+            className="w-full rounded border-2 border-gray-500 p-2 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
           />
         </div>
-        <div className="grid w-full grid-cols-1 gap-4 md:w-2/3 md:grid-cols-3">
+        <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-3">
           <div className="rounded bg-white p-4 shadow">
             <h3 className="text-sm font-medium text-gray-500">Current Value</h3>
             <p className="text-2xl font-bold text-green-600">
