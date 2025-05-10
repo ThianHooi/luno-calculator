@@ -51,25 +51,82 @@ const LunoInvestmentCalculator: React.FC = () => {
               return;
             }
 
-            // Map CSV data to our transaction format
-            const mappedTransactions: Transaction[] = filteredTransactions.map(
-              (row) => {
-                // Format the date from timestamp
-                let formattedDate = "";
+            // Group transactions by reference ID to combine main transactions with their fees
+            const groupedByReference: Record<string, CSVRow[]> = {};
+            filteredTransactions.forEach((row) => {
+              const reference = row.Reference ?? "";
+              groupedByReference[reference] ??= [];
+              groupedByReference[reference].push(row);
+            });
 
-                if (row["Timestamp (UTC)"]) {
-                  const date = new Date(row["Timestamp (UTC)"]);
+            // Process each transaction group to combine main transactions with their fees
+            const mappedTransactions: Transaction[] = [];
+
+            Object.entries(groupedByReference).forEach(([reference, group]) => {
+              // Find main transaction and fee transactions in this group
+              const mainTx = group.find(
+                (row) => !row.Description?.includes("Trading fee"),
+              );
+              const feeTxs = group.filter((row) =>
+                row.Description?.includes("Trading fee"),
+              );
+
+              if (mainTx) {
+                // Format the date
+                let formattedDate = "";
+                if (mainTx["Timestamp (UTC)"]) {
+                  const date = new Date(mainTx["Timestamp (UTC)"]);
                   formattedDate = `${date.getDate().toString().padStart(2, "0")}/${(date.getMonth() + 1).toString().padStart(2, "0")}/${date.getFullYear()}, ${date.getHours().toString().padStart(2, "0")}:${date.getMinutes().toString().padStart(2, "0")}`;
                 }
 
-                return {
+                // Calculate total fees
+                const feeAmountCrypto = feeTxs.reduce(
+                  (sum, tx) => sum + (tx["Balance delta"] ?? 0),
+                  0,
+                );
+                const feeAmountMYR = feeTxs.reduce(
+                  (sum, tx) => sum + (tx["Value amount"] ?? 0),
+                  0,
+                );
+
+                // Determine if it's a buy or sell transaction
+                const mainAmount = mainTx["Balance delta"] ?? 0;
+                const isBuy = mainAmount > 0;
+                const isSell = mainAmount < 0;
+
+                // Create processed transaction with fees incorporated
+                mappedTransactions.push({
                   date: formattedDate,
-                  description: row.Description ?? "Transaction",
-                  amount: row["Balance delta"] ?? 0,
-                  myr: row["Value amount"] ?? 0,
-                };
-              },
-            );
+                  description: mainTx.Description ?? "Transaction",
+                  amount: mainAmount + feeAmountCrypto, // Incorporate fee amount
+                  myr: isBuy
+                    ? (mainTx["Value amount"] ?? 0) + feeAmountMYR // For buys: add fee to cost
+                    : -1 * (mainTx["Value amount"] ?? 0) - feeAmountMYR, // For sells: negate proceeds and subtract fee
+                  type: isBuy ? "buy" : isSell ? "sell" : "other",
+                  reference: reference,
+                });
+              } else if (group.length > 0) {
+                // Handle orphaned fee or other transaction types
+                const tx = group[0]!;
+                let formattedDate = "";
+
+                if (tx["Timestamp (UTC)"]) {
+                  const date = new Date(tx["Timestamp (UTC)"]);
+                  formattedDate = `${date.getDate().toString().padStart(2, "0")}/${(date.getMonth() + 1).toString().padStart(2, "0")}/${date.getFullYear()}, ${date.getHours().toString().padStart(2, "0")}:${date.getMinutes().toString().padStart(2, "0")}`;
+                }
+
+                mappedTransactions.push({
+                  date: formattedDate,
+                  description: tx.Description ?? "Transaction",
+                  amount: tx["Balance delta"] ?? 0,
+                  myr: tx["Value amount"] ?? 0,
+                  type: tx.Description?.includes("Trading fee")
+                    ? "fee"
+                    : "other",
+                  reference: reference,
+                });
+              }
+            });
 
             setTransactions(mappedTransactions);
             setIsLoading(false);
@@ -102,14 +159,26 @@ const LunoInvestmentCalculator: React.FC = () => {
       };
     }
 
+    // Sum up the amounts and costs
+    // For MYR, we're already handling the sign in the handleFileUpload:
+    // - Buy transactions have positive MYR (cost)
+    // - Sell transactions have negative MYR (proceeds, but recorded as negative)
     const totalAmount = transactions.reduce(
       (total, tx) => total + tx.amount,
       0,
     );
     const totalMyr = transactions.reduce((total, tx) => total + tx.myr, 0);
+
+    // Calculate the average cost basis
     const averagePrice = totalAmount !== 0 ? totalMyr / totalAmount : 0;
+
+    // Current portfolio value
     const currentValue = totalAmount * currentPrice;
+
+    // Profit/loss
     const profit = currentValue - totalMyr;
+
+    // ROI
     const roiPercentage = totalMyr !== 0 ? (profit / totalMyr) * 100 : 0;
 
     return {
@@ -131,7 +200,7 @@ const LunoInvestmentCalculator: React.FC = () => {
 
     transactions.forEach((tx) => {
       const date = tx.date.split(", ")[0];
-      const year = date!.split("/")[2];
+      const year = date?.split("/")[2];
 
       if (!year) return;
 

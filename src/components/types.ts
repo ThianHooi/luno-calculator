@@ -3,6 +3,8 @@ export type Transaction = {
   description: string;
   amount: number;
   myr: number;
+  type: 'buy' | 'sell' | 'fee' | 'other';
+  reference?: string;
 };
 
 export type CSVRow = {

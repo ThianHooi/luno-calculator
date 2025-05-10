@@ -42,6 +42,9 @@ const TransactionHistory = ({
                   Description
                 </th>
                 <th className="px-4 py-3 text-left font-medium text-gray-700">
+                  Type
+                </th>
+                <th className="px-4 py-3 text-left font-medium text-gray-700">
                   {currency} Amount
                 </th>
                 <th className="px-4 py-3 text-left font-medium text-gray-700">
@@ -53,15 +56,22 @@ const TransactionHistory = ({
               {transactions.map((tx, index) => (
                 <tr
                   key={index}
-                  className={`hover:bg-gray-50 ${tx.amount < 0 ? "text-red-600" : ""}`}
+                  className={`hover:bg-gray-50 ${
+                    tx.type === "buy"
+                      ? "text-green-600"
+                      : tx.type === "sell"
+                        ? "text-red-600"
+                        : ""
+                  }`}
                 >
                   <td className="px-4 py-2">{tx.date}</td>
                   <td className="px-4 py-2">{tx.description}</td>
+                  <td className="px-4 py-2 capitalize">{tx.type}</td>
+                  <td className="px-4 py-2">{formatNumber(tx.amount, 8)}</td>
                   <td className="px-4 py-2">
-                    {formatNumber(tx.amount, 8)}
-                  </td>
-                  <td className="px-4 py-2">
-                    MYR {formatNumber(tx.myr)}
+                    MYR {formatNumber(Math.abs(tx.myr))}
+                    {tx.type === "sell" && tx.myr < 0 && " (proceeds)"}
+                    {tx.type === "buy" && " (cost)"}
                   </td>
                 </tr>
               ))}
