@@ -55,6 +55,9 @@ const FileUploadSection = ({
               CSV should include columns: Timestamp (UTC), Description,
               Currency, Balance delta, Value amount
             </p>
+            <p className="mt-1 italic">
+              Note: All data are processed in your browser and are not sent to any third parties.
+            </p>
           </div>
         </div>
       </div>
