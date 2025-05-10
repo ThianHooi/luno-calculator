@@ -16,6 +16,8 @@ const TransactionHistory = ({
   setShowAllTransactions,
   currency,
 }: TransactionHistoryProps) => {
+  const displayCurrency = currency.toUpperCase() === "XBT" ? "BTC" : currency;
+
   return (
     <div>
       <div className="mb-4 flex items-center justify-between">
@@ -45,7 +47,7 @@ const TransactionHistory = ({
                   Type
                 </th>
                 <th className="px-4 py-3 text-left font-medium text-gray-700">
-                  {currency} Amount
+                  {displayCurrency} Amount
                 </th>
                 <th className="px-4 py-3 text-left font-medium text-gray-700">
                   MYR Value

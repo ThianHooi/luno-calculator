@@ -41,9 +41,19 @@ const LunoInvestmentCalculator: React.FC = () => {
             }
 
             // Filter for transactions of the selected currency
-            const filteredTransactions = results.data.filter(
-              (row) => row.Currency?.toUpperCase() === currency.toUpperCase(),
-            );
+            // Special handling for BTC which can be represented as XBT in some exchanges like Luno
+            const filteredTransactions = results.data.filter((row) => {
+              const upperCurrency = currency.toUpperCase();
+              const rowCurrency = row.Currency?.toUpperCase() ?? "";
+
+              // If user enters BTC, match both BTC and XBT
+              if (upperCurrency === "BTC" || upperCurrency === "XBT") {
+                return rowCurrency === "BTC" || rowCurrency === "XBT";
+              }
+
+              // For all other currencies, exact match
+              return rowCurrency === upperCurrency;
+            });
 
             if (filteredTransactions.length === 0) {
               setError(`No ${currency} transactions found in the CSV file`);
@@ -159,10 +169,10 @@ const LunoInvestmentCalculator: React.FC = () => {
       };
     }
 
+    // Get the display currency (show BTC instead of XBT for consistency)
+    const displayCurrency = currency.toUpperCase() === "XBT" ? "BTC" : currency;
+
     // Sum up the amounts and costs
-    // For MYR, we're already handling the sign in the handleFileUpload:
-    // - Buy transactions have positive MYR (cost)
-    // - Sell transactions have negative MYR (proceeds, but recorded as negative)
     const totalAmount = transactions.reduce(
       (total, tx) => total + tx.amount,
       0,
@@ -182,7 +192,7 @@ const LunoInvestmentCalculator: React.FC = () => {
     const roiPercentage = totalMyr !== 0 ? (profit / totalMyr) * 100 : 0;
 
     return {
-      currency,
+      currency: displayCurrency,
       totalAmount,
       totalMyr,
       averagePrice,

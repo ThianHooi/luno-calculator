@@ -17,6 +17,9 @@ const YearlyBreakdownSection = ({
   if (Object.keys(transactionsByYear).length === 0) {
     return null;
   }
+  
+  // Get the display currency (show BTC instead of XBT for consistency)
+  const displayCurrency = currency.toUpperCase() === "XBT" ? "BTC" : currency;
 
   return (
     <div className="mb-6">
@@ -31,7 +34,7 @@ const YearlyBreakdownSection = ({
                 Year
               </th>
               <th className="px-4 py-3 text-left font-medium text-gray-700">
-                {currency} Purchased
+                {displayCurrency} Purchased
               </th>
               <th className="px-4 py-3 text-left font-medium text-gray-700">
                 MYR Spent
