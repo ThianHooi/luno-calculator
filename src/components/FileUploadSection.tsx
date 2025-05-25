@@ -30,9 +30,7 @@ const FileUploadSection = ({
             <div className="flex-1">
               <label className="flex h-12 w-full cursor-pointer appearance-none items-center justify-center rounded-md border-2 border-dashed border-gray-300 bg-white px-4 transition hover:border-blue-500 focus:outline-none">
                 <span className="text-sm text-gray-600">
-                  {isLoading
-                    ? "Processing..."
-                    : "Choose a file or drag and drop"}
+                  {isLoading ? "Processing..." : "Choose a file"}
                 </span>
                 <input
                   type="file"
@@ -56,7 +54,8 @@ const FileUploadSection = ({
               Currency, Balance delta, Value amount
             </p>
             <p className="mt-1 italic">
-              Note: All data are processed in your browser and are not sent to any third parties.
+              Note: All data are processed in your browser and are not sent to
+              any third parties.
             </p>
           </div>
         </div>
