@@ -20,8 +20,8 @@ const ROICalculator = ({
         Return on Investment
       </h2>
       <div className="mb-4">
-        <div className="mb-4 w-full md:w-1/3">
-          <label className="mb-1 block text-sm font-medium text-gray-700">
+        <div className="mb-4 w-full md:w-1/2">
+          <label className="mb-1 block text-2xl font-bold text-gray-700">
             Current {metrics.currency} Price (MYR)
           </label>
           <input
